@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionCalls>
+        <name>Handle_Document_Approval_Request</name>
+        <label>Handle Document Approval Request</label>
+        <locationX>50</locationX>
+        <locationY>458</locationY>
+        <actionName>AgentforceRequestHandler</actionName>
+        <actionType>apex</actionType>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <inputParameters>
+            <name>inputQuery</name>
+            <value>
+                <elementReference>quoteAndProposalDocumentName</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>quoteRecordId</name>
+            <value>
+                <elementReference>$Record.ssot__RelatedItemId__c</elementReference>
+            </value>
+        </inputParameters>
+        <nameSegment>AgentforceRequestHandler</nameSegment>
+        <offset>0</offset>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </actionCalls>
+    <apiVersion>63.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <decisions>
+        <name>Check_If_Proposal_or_Contract_Document_Is_Updated</name>
+        <label>Check If Proposal or Contract Document Is Updated</label>
+        <locationX>182</locationX>
+        <locationY>134</locationY>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Proposal_Document_Is_Uploaded</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.ssot__RelatedItemId__c</leftValueReference>
+                <operator>StartsWith</operator>
+                <rightValue>
+                    <stringValue>0Q0</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Get_Quote_Record</targetReference>
+            </connector>
+            <label>Proposal Document Is Uploaded</label>
+        </rules>
+    </decisions>
+    <environments>Default</environments>
+    <interviewLabel>CaptureOpportunityFileUpload {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>CaptureOpportunityFileUpload</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordLookups>
+        <name>Get_Proposal_Document</name>
+        <label>Get Proposal Document</label>
+        <locationX>50</locationX>
+        <locationY>350</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Handle_Document_Approval_Request</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.ssot__ContentDocumentId__c</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>ContentDocument</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_Quote_Record</name>
+        <label>Get Quote Record</label>
+        <locationX>50</locationX>
+        <locationY>242</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Get_Proposal_Document</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.ssot__RelatedItemId__c</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Quote</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <start>
+        <locationX>56</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Check_If_Proposal_or_Contract_Document_Is_Updated</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>ssot__RelatedItemId__c</field>
+            <operator>StartsWith</operator>
+            <value>
+                <stringValue>006</stringValue>
+            </value>
+        </filters>
+        <object>ssot__ContentDocumentRelationship__dlm</object>
+        <recordTriggerType>Create</recordTriggerType>
+        <triggerType>DataCloudDataChange</triggerType>
+    </start>
+    <status>Active</status>
+    <textTemplates>
+        <name>ContractNameAndContractDocumentName</name>
+        <isViewedAsPlainText>false</isViewedAsPlainText>
+        <text>&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;Contract Number:{!785b5840-a71e-4196-86d3-fbb434f9756e.ContractNumber} and the Contract document Name is: {!96810a11-4369-45dc-b2aa-3a80df0eacf0.Title}&lt;/span&gt;&lt;/p&gt;</text>
+    </textTemplates>
+    <textTemplates>
+        <name>quoteAndProposalDocumentName</name>
+        <isViewedAsPlainText>true</isViewedAsPlainText>
+        <text>Quote Name: {!Get_Quote_Record.Name}
+and Proposal document Title: {!Get_Proposal_Document.Title}
+get all the record and File information related to discount and pricing.</text>
+    </textTemplates>
+</Flow>

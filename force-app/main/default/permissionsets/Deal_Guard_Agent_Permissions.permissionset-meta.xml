@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Allows custom permissions for Agentforce Agent : Deal_Guard_Agent&apos;s agent user : deal_guard_agent@00dns00000icnyf.ext.</description>
+    <hasActivationRequired>false</hasActivationRequired>
+    <label>Deal_Guard_Agent Permissions</label>
+    <license>Einstein Agent</license>
+</PermissionSet>

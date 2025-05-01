@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiPromptTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <activeVersionIdentifier>NgiNI8rnm0q7PchgSYjvOB8RHWs1dzRB3l+bUyNl2N4=_3</activeVersionIdentifier>
+    <description>This prompt template builder is used to compare the proposal document related to the opportunity to the standard document and the historical proposal document.</description>
+    <developerName>Compare_the_Proposal_Document</developerName>
+    <masterLabel>Compare the Proposal Document</masterLabel>
+    <templateVersions>
+        <content>You are a CRM assistant to a Finance Team and your goal is to check if the proposal document uploaded to the opportunity is following the Standard Proposal Document.
+
+##Instruction: 
+
+Compare the following information in the UPLOADED_DOCUMENT and STANDARD_DOCUMENT :
+1. Compare the UPLOADED_DOCUMENT Details with the STANDARD_DOCUMENT details and see if the discount mentioned in UPLOADED_DOCUMENT Details greater than the discount provided in the STANDARD_DOCUMENT. 
+   If its true :
+    &quot;{
+       &quot;documentType: &quot;Proposal&quot;,
+      &quot;issueNoted&quot; : true,
+      &quot;message&quot; : [&quot;Discount is more that standard value:10% discount (above max 5%)&quot;] // Add as many reason if they are not aligned with the STANDARD_DOCUMENT
+   }&quot;
+ 
+   else:
+    &quot;{
+      &quot;documentType: &quot;Proposal&quot;,
+      &quot;issueNoted&quot; : false,
+     &quot;message&quot; : [] 
+    }&quot;
+
+
+##UPLOADED_DOCUMENT:
+{!$EinsteinSearch:Default_Quote_With_File_Index_Retriever_1Cx_nyFb7cdcdfe.results}
+
+##STANDARD_DOCUMENT:
+{!$EinsteinSearch:File_Standard_Proposal_Document_1Cx_nyFc958ec06.results}
+
+Follow the below mentioned instruction before giving the output:
+1. Do not search over the internet for information. If you are unable to get the discount information in Uploaded document Details are info say &quot;Unable to see the discount information.&quot; 
+2. Be polite in your response Always. 
+
+
+
+##Output: Give me the response in &lt;generated_response&gt; 
+
+I want the response in JSON format below is the example response:
+
+Response 1 Sample: 
+ &quot;{
+ &quot;documentType: &quot;Proposal&quot;,
+ &quot;issueNoted&quot; : true,
+ &quot;message&quot; : [&quot;Discount is more that standard value:10% discount (above max 5%)&quot;] // Add as many reason if they are not aligned with the STANDARD_DOCUMENT
+ }&quot;
+
+Response 2 Sample: 
+ &quot;{
+ &quot;documentType: &quot;Proposal&quot;,
+ &quot;issueNoted&quot; : false,
+ &quot;message&quot; : [] 
+ }&quot;
+
+
+</content>
+        <inputs>
+            <apiName>Input_Query</apiName>
+            <definition>primitive://String</definition>
+            <masterLabel>Input Query</masterLabel>
+            <referenceName>Input:Input_Query</referenceName>
+            <required>true</required>
+        </inputs>
+        <primaryModel>sfdc_ai__DefaultOpenAIGPT4OmniMini</primaryModel>
+        <status>Draft</status>
+        <templateDataProviders>
+            <definition>invocable://getEinsteinRetrieverResults/File_Standard_Proposal_Document_1Cx_nyFc958ec06</definition>
+            <parameters>
+                <definition>primitive://String</definition>
+                <isRequired>true</isRequired>
+                <parameterName>searchText</parameterName>
+                <valueExpression>All the file information</valueExpression>
+            </parameters>
+            <referenceName>EinsteinSearch:File_Standard_Proposal_Document_1Cx_nyFc958ec06</referenceName>
+        </templateDataProviders>
+        <templateDataProviders>
+            <definition>invocable://getEinsteinRetrieverResults/Default_Quote_With_File_Index_Retriever_1Cx_nyFb7cdcdfe</definition>
+            <parameters>
+                <definition>primitive://String</definition>
+                <isRequired>true</isRequired>
+                <parameterName>searchText</parameterName>
+                <valueExpression>{!$Input:Input_Query}</valueExpression>
+            </parameters>
+            <referenceName>EinsteinSearch:Default_Quote_With_File_Index_Retriever_1Cx_nyFb7cdcdfe</referenceName>
+        </templateDataProviders>
+        <versionIdentifier>NgiNI8rnm0q7PchgSYjvOB8RHWs1dzRB3l+bUyNl2N4=_1</versionIdentifier>
+    </templateVersions>
+    <templateVersions>
+        <content>You are a CRM assistant to a Finance Team and your goal is to check if the proposal document uploaded to the opportunity is following the Standard Proposal Document.
+
+User Data: {!$Input:Input_Query}
+
+##Instruction: 
+
+Compare the following information in the UPLOADED_DOCUMENT and STANDARD_DOCUMENT :
+1. Compare the UPLOADED_DOCUMENT Details with the STANDARD_DOCUMENT details and see if the discount mentioned in UPLOADED_DOCUMENT Details greater than the discount provided in the STANDARD_DOCUMENT. 
+   If its true prepare MESSAGE by saying what is the uploaded document discount and the discount mentioned in the standard document. 
+   else keep the MESSAGE empty
+    
+
+
+##UPLOADED_DOCUMENT: this is where you will find the discount information:
+Start of the updated document
+{!$EinsteinSearch:Default_Quote_With_File_Index_Retriever_1Cx_nyFb7cdcdfe.results}
+end of the updated document
+
+##STANDARD_DOCUMENT:
+start of standard document
+{!$EinsteinSearch:File_Standard_Proposal_Document_1Cx_nyFc958ec06.results}
+end of standard document
+
+
+Follow the below mentioned instruction before giving the output:
+1. Do not search over the internet for information. If you are unable to get the discount information in Uploaded document Details are info say &quot;Unable to see the discount information.&quot; 
+2. Be polite in your response always. 
+3. Do Not include &lt;generated_response&gt; tags in the response
+
+
+
+##Output: Give me the response in &lt;generated_response&gt; 
+
+I want the response in JSON format below is the example response:
+
+This is a sample if the discount Present in UPLOADED_DOCUMENT is greater than #STANDARD_DOCUMENT:
+ 
+Response 1 Sample: 
+ &quot;{
+ &quot;documentType: &quot;Proposal&quot;,
+ &quot;issueNoted&quot; : true,
+ &quot;message&quot; : [&quot;Discount is greater than standard document: 18% discount (above 15%)&quot;]
+ }&quot;
+
+
+This is a sample if the discount is less than #STANDARD_DOCUMENT:
+Response 2 Sample: 
+ &quot;{
+ &quot;documentType: &quot;Proposal&quot;,
+ &quot;issueNoted&quot; : false,
+ &quot;message&quot; : [] 
+ }&quot;
+
+
+</content>
+        <inputs>
+            <apiName>Input_Query</apiName>
+            <definition>primitive://String</definition>
+            <masterLabel>Input Query</masterLabel>
+            <referenceName>Input:Input_Query</referenceName>
+            <required>true</required>
+        </inputs>
+        <primaryModel>sfdc_ai__DefaultOpenAIGPT4OmniMini</primaryModel>
+        <status>Published</status>
+        <templateDataProviders>
+            <definition>invocable://getEinsteinRetrieverResults/File_Standard_Proposal_Document_1Cx_nyFc958ec06</definition>
+            <parameters>
+                <definition>primitive://String</definition>
+                <isRequired>true</isRequired>
+                <parameterName>searchText</parameterName>
+                <valueExpression>All the file information</valueExpression>
+            </parameters>
+            <parameters>
+                <definition>primitive://List&lt;String&gt;</definition>
+                <isRequired>false</isRequired>
+                <parameterName>outputFieldNames</parameterName>
+                <valueExpression>[&quot;Chunk&quot;]</valueExpression>
+            </parameters>
+            <referenceName>EinsteinSearch:File_Standard_Proposal_Document_1Cx_nyFc958ec06</referenceName>
+        </templateDataProviders>
+        <templateDataProviders>
+            <definition>invocable://getEinsteinRetrieverResults/Default_Quote_With_File_Index_Retriever_1Cx_nyFb7cdcdfe</definition>
+            <parameters>
+                <definition>primitive://String</definition>
+                <isRequired>true</isRequired>
+                <parameterName>searchText</parameterName>
+                <valueExpression>{!$Input:Input_Query}</valueExpression>
+            </parameters>
+            <parameters>
+                <definition>primitive://List&lt;String&gt;</definition>
+                <isRequired>false</isRequired>
+                <parameterName>outputFieldNames</parameterName>
+                <valueExpression>[&quot;Chunk&quot;]</valueExpression>
+            </parameters>
+            <referenceName>EinsteinSearch:Default_Quote_With_File_Index_Retriever_1Cx_nyFb7cdcdfe</referenceName>
+        </templateDataProviders>
+        <versionIdentifier>NgiNI8rnm0q7PchgSYjvOB8RHWs1dzRB3l+bUyNl2N4=_2</versionIdentifier>
+    </templateVersions>
+    <templateVersions>
+        <content>You are a CRM assistant to a Finance Team and your goal is to check if the proposal document uploaded to the opportunity is following the Standard Proposal Document.
+
+User Data: {!$Input:Input_Query}
+
+##Instruction: 
+
+Compare the following information in the UPLOADED_DOCUMENT and STANDARD_DOCUMENT :
+1. Compare the UPLOADED_DOCUMENT Details with the STANDARD_DOCUMENT details and see if the discount mentioned in UPLOADED_DOCUMENT Details greater than the discount provided in the STANDARD_DOCUMENT. 
+   If its true prepare MESSAGE by saying what is the uploaded document discount and the discount mentioned in the standard document. 
+   else keep the MESSAGE empty
+2. Compare the UPLOADED_DOCUMENT Details with the STANDARD_DOCUMENT details and see if the Pricing terms mentioned in UPLOADED_DOCUMENT  is less than the pricing mentioned in the STANDARD_DOCUMENT. 
+  If its true prepare MESSAGE by mentioning the pricing mentioned in  UPLOADED_DOCUMENT Payment terms  and the payment terms mentioned in the STANDARD_DOCUMENT. 
+  else keep the MESSAGE empty
+
+
+##UPLOADED_DOCUMENT: this is where you will find the discount information:
+Start of the updated document
+{!$EinsteinSearch:Default_Quote_With_File_Index_Retriever_1Cx_nyFb7cdcdfe.results}
+end of the updated document
+
+##STANDARD_DOCUMENT:
+start of standard document
+{!$EinsteinSearch:File_Standard_Proposal_Document_1Cx_nyFc958ec06.results}
+end of standard document
+
+
+Follow the below mentioned instruction before giving the output:
+1. Do not search over the internet for information. If you are unable to get the discount information in Uploaded document Details are info say &quot;Unable to see the discount information.&quot; 
+2. Be polite in your response always. 
+3. Do Not include &lt;generated_response&gt; tags in the response
+
+
+
+##Output: Give me the response in &lt;generated_response&gt; 
+
+I want the response in JSON format below is the example response:
+
+This is a sample if the discount Present in UPLOADED_DOCUMENT is greater than #STANDARD_DOCUMENT:
+ 
+Response 1 Sample: 
+ &quot;{
+ &quot;documentType: &quot;Proposal&quot;,
+ &quot;issueNoted&quot; : true,
+ &quot;message&quot; : [&quot;Discount is greater than standard document: 18% discount (above 15%)&quot;, &quot;The Cost of implementing salesforce is 20,000$ in the uploaded document  but in the standard the pricing is 50,000$ which is less&quot;]
+ }&quot;
+
+
+This is a sample if the discount is less than #STANDARD_DOCUMENT:
+Response 2 Sample: 
+ &quot;{
+ &quot;documentType: &quot;Proposal&quot;,
+ &quot;issueNoted&quot; : false,
+ &quot;message&quot; : [] 
+ }&quot;
+
+
+</content>
+        <inputs>
+            <apiName>Input_Query</apiName>
+            <definition>primitive://String</definition>
+            <masterLabel>Input Query</masterLabel>
+            <referenceName>Input:Input_Query</referenceName>
+            <required>true</required>
+        </inputs>
+        <primaryModel>sfdc_ai__DefaultOpenAIGPT4OmniMini</primaryModel>
+        <status>Published</status>
+        <templateDataProviders>
+            <definition>invocable://getEinsteinRetrieverResults/Default_Quote_With_File_Index_Retriever_1Cx_nyFb7cdcdfe</definition>
+            <parameters>
+                <definition>primitive://List&lt;String&gt;</definition>
+                <isRequired>false</isRequired>
+                <parameterName>outputFieldNames</parameterName>
+                <valueExpression>[&quot;Chunk&quot;]</valueExpression>
+            </parameters>
+            <parameters>
+                <definition>primitive://String</definition>
+                <isRequired>true</isRequired>
+                <parameterName>searchText</parameterName>
+                <valueExpression>{!$Input:Input_Query}</valueExpression>
+            </parameters>
+            <referenceName>EinsteinSearch:Default_Quote_With_File_Index_Retriever_1Cx_nyFb7cdcdfe</referenceName>
+        </templateDataProviders>
+        <templateDataProviders>
+            <definition>invocable://getEinsteinRetrieverResults/File_Standard_Proposal_Document_1Cx_nyFc958ec06</definition>
+            <parameters>
+                <definition>primitive://List&lt;String&gt;</definition>
+                <isRequired>false</isRequired>
+                <parameterName>outputFieldNames</parameterName>
+                <valueExpression>[&quot;Chunk&quot;]</valueExpression>
+            </parameters>
+            <parameters>
+                <definition>primitive://String</definition>
+                <isRequired>true</isRequired>
+                <parameterName>searchText</parameterName>
+                <valueExpression>All the file information</valueExpression>
+            </parameters>
+            <referenceName>EinsteinSearch:File_Standard_Proposal_Document_1Cx_nyFc958ec06</referenceName>
+        </templateDataProviders>
+        <versionIdentifier>NgiNI8rnm0q7PchgSYjvOB8RHWs1dzRB3l+bUyNl2N4=_3</versionIdentifier>
+    </templateVersions>
+    <type>einstein_gpt__flex</type>
+    <visibility>Global</visibility>
+</GenAiPromptTemplate>

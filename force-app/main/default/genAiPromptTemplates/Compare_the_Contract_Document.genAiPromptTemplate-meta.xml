@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiPromptTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>This prompt template builder is used to compare the contract document related to the opportunity to the standard document and the historical contract document.</description>
+    <developerName>Compare_the_Contract_Document</developerName>
+    <masterLabel>Compare the Contract Document</masterLabel>
+    <templateVersions>
+        <content>You are a CRM assistant to a Sales and Legal Team and your goal is to check if the contract document is following the Standard Contract Document and also check if there is and similar red flag similar to previous contract and contract document data.
+
+
+##UPLOADED_DOCUMENT( this is the main the that you will use for comparing):
+Start of the updated document
+{!$EinsteinSearch:Default_Contract_With_File_Index_Retriever_1Cx_nyF78e6d75b.results}
+end of the updated document
+
+##STANDARD_DOCUMENT:
+start of standard document
+{!$EinsteinSearch:File_Standard_Contract_Document_1Cx_nyF46b5ede0.results}
+end of standard document
+
+
+
+##Instruction: 
+
+Consider the following instruction when you compare the UPLOADED_DOCUMENT with STANDARD_DOCUMENT and previous HISTORICAL_DOCUMENTS:
+1. Compare the UPLOADED_DOCUMENT Details with the STANDARD_DOCUMENT details and see if the if they are not aligning with the STANDARD_DOCUMENT. 
+   
+   If true then the respond in JSON format:
+   &quot;{
+    &quot;documentType: &quot;Contract&quot;,
+    &quot;issueNoted&quot; : true,
+    &quot;message&quot; : [&lt;List of difference in String format &gt;] // Add as many difference if they are not aligned with the STANDARD_DOCUMENT
+   }&quot;
+
+   Else respond:
+   &quot;{
+    &quot;documentType: &quot;Contract&quot;,
+    &quot;issueNoted&quot; : false,
+    &quot;message&quot; : [] 
+   }&quot;
+
+
+Follow the below mentioned instruction before giving the output:
+1. Do not search over the internet for information. If you are unable to get the discount information in Uploaded document Details are info say &quot;Unable to see the discount information.&quot; 
+2. Be polite in your response Always. 
+
+
+
+##Output: Give me the response in &lt;generated_response&gt;. I want the response similar to following format:
+Response 1 Sample: 
+ &quot;{
+  &quot;documentType: &quot;Contract&quot;,
+  &quot;issueNoted&quot; : true,
+  &quot;message&quot; : [&lt;List of difference in String format &gt;] // Add as many reason if they are not aligned with the STANDARD_DOCUMENT
+  }&quot;
+
+Response 2 Sample: 
+  &quot;{
+  &quot;documentType: &quot;Contract&quot;,
+  &quot;issueNoted&quot; : false,
+  &quot;message&quot; : [] 
+  }&quot;
+
+</content>
+        <inputs>
+            <apiName>Input_Query</apiName>
+            <definition>primitive://String</definition>
+            <masterLabel>Input Query</masterLabel>
+            <referenceName>Input:Input_Query</referenceName>
+            <required>true</required>
+        </inputs>
+        <primaryModel>sfdc_ai__DefaultOpenAIGPT4OmniMini</primaryModel>
+        <status>Draft</status>
+        <templateDataProviders>
+            <definition>invocable://getEinsteinRetrieverResults/File_Standard_Contract_Document_1Cx_nyF46b5ede0</definition>
+            <parameters>
+                <definition>primitive://String</definition>
+                <isRequired>true</isRequired>
+                <parameterName>searchText</parameterName>
+                <valueExpression>All the information</valueExpression>
+            </parameters>
+            <referenceName>EinsteinSearch:File_Standard_Contract_Document_1Cx_nyF46b5ede0</referenceName>
+        </templateDataProviders>
+        <templateDataProviders>
+            <definition>invocable://getEinsteinRetrieverResults/Default_Contract_With_File_Index_Retriever_1Cx_nyF78e6d75b</definition>
+            <parameters>
+                <definition>primitive://String</definition>
+                <isRequired>true</isRequired>
+                <parameterName>searchText</parameterName>
+                <valueExpression>{!$Input:Input_Query}</valueExpression>
+            </parameters>
+            <parameters>
+                <definition>primitive://List&lt;String&gt;</definition>
+                <isRequired>false</isRequired>
+                <parameterName>outputFieldNames</parameterName>
+                <valueExpression>[&quot;Chunk&quot;]</valueExpression>
+            </parameters>
+            <referenceName>EinsteinSearch:Default_Contract_With_File_Index_Retriever_1Cx_nyF78e6d75b</referenceName>
+        </templateDataProviders>
+        <versionIdentifier>NgiNI8rnm0q7PchgSYjvOB8RHWs1dzRB3l+bUyNl2N4=_1</versionIdentifier>
+    </templateVersions>
+    <type>einstein_gpt__flex</type>
+    <visibility>Global</visibility>
+</GenAiPromptTemplate>
